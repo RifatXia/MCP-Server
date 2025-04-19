@@ -2,6 +2,7 @@ from fastapi import HTTPException
 import os
 from src.capabilities.parquet_handler import read_column
 from src.capabilities.sort_handler import sort_log_by_timestamp
+from src.capabilities.compression_handler import compress_file
 
 # sample data for resources
 resources = [
@@ -20,6 +21,12 @@ tools = [
         "name": "Parallel Sorting",
         "description": "Sorts log file entries by timestamp",
         "usage": "'tool': 'sort', 'file': 'log_filename' in params."
+    },
+    {
+        "id": "tool3",
+        "name": "Compression Tool",
+        "description": "Compresses files using gzip",
+        "usage": "'tool': 'compress', 'file': 'filename' in params."
     }
 ]
 
@@ -72,7 +79,7 @@ def call_tool(params, request_id):
         
         filepath = os.path.join("data", file)
              
-        # read the column data
+        # read column data from parquet file
         result = read_column(filepath, column)   
         return {"jsonrpc": "2.0", "id": request_id, "result": result}
     
@@ -80,8 +87,16 @@ def call_tool(params, request_id):
         file = params.get("file", "huge_log.txt")
         filepath = os.path.join("data", file)
         
-        # sort the log file
+        # sort log file by timestamp
         result = sort_log_by_timestamp(filepath)
+        return {"jsonrpc": "2.0", "id": request_id, "result": result}
+    
+    elif tool == "compress":
+        file = params.get("file", "output.log")
+        filepath = os.path.join("data", file)
+        
+        # compress file using gzip
+        result = compress_file(filepath)
         return {"jsonrpc": "2.0", "id": request_id, "result": result}
     
     else:

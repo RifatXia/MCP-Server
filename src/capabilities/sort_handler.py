@@ -4,8 +4,8 @@ def sort_log_by_timestamp(file_path: str):
         with open(file_path, 'r') as f:
             lines = f.readlines()
         
-        # sort lines based on timestamp (first two elements of each line)
+        # sort lines based on timestamp
         sorted_lines = sorted(lines, key=lambda line: line.split()[0] + " " + line.split()[1])
         return sorted_lines
     except Exception as e:
-        return {"error": f"Error processing file: {str(e)}"} 
+        return {"error": f"error processing file: {str(e)}"} 
