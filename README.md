@@ -2,7 +2,7 @@
 
 uvicorn src.server:app --reload
 
-Parquet data:
+# Parquet data:
 {
   "jsonrpc": "2.0",
   "method": "mcp/callTool",
@@ -11,4 +11,25 @@ Parquet data:
     "tool": "parquet",
     "column": "temperature"
   }
+}
+
+# Sorting Log data
+{
+    "jsonrpc": "2.0",
+    "method": "mcp/callTool",
+    "params": {
+        "tool": "sort",
+        "file": "huge_log.txt"
+    },
+    "id": 1
+}
+
+{
+    "jsonrpc": "2.0",
+    "method": "mcp/callTool",
+    "params": {
+        "tool": "sort",
+        "file": "small_log.txt"
+    },
+    "id": 1
 }

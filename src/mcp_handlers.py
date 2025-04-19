@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 import os
 from src.capabilities.parquet_handler import read_column
+from src.capabilities.sort_handler import sort_log_by_timestamp
 
 # sample data for resources
 resources = [
@@ -13,6 +14,12 @@ tools = [
         "name": "Parquet Reader",
         "description": "Reads columns from Parquet files",
         "usage": "'tool': 'parquet', 'file': 'filename (optional)', 'column': 'column_name' in params."
+    },
+    {
+        "id": "tool2",
+        "name": "Parallel Sorting",
+        "description": "Sorts log file entries by timestamp",
+        "usage": "'tool': 'sort', 'file': 'log_filename' in params."
     }
 ]
 
@@ -68,6 +75,15 @@ def call_tool(params, request_id):
         # read the column data
         result = read_column(filepath, column)   
         return {"jsonrpc": "2.0", "id": request_id, "result": result}
+    
+    elif tool == "sort":
+        file = params.get("file", "huge_log.txt")
+        filepath = os.path.join("data", file)
+        
+        # sort the log file
+        result = sort_log_by_timestamp(filepath)
+        return {"jsonrpc": "2.0", "id": request_id, "result": result}
+    
     else:
         return {
             "jsonrpc": "2.0",
