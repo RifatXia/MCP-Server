@@ -1,15 +1,11 @@
 from fastapi import HTTPException
+import os
+from src.capabilities.parquet_handler import read_column
 
 # sample data for resources
 resources = [
     {"id": "resource1", "type": "HDF5", "description": "Sample HDF5 resource"},
     {"id": "resource2", "type": "S3", "description": "Sample S3 resource"}
-]
-
-# sample data for tools
-tools = [
-    {"id": "tool1", "name": "Compression Tool", "description": "Simulates data compression"},
-    {"id": "tool2", "name": "Slurm Job Scheduler", "description": "Simulates job scheduling"}
 ]
 
 # handle mcp request
@@ -23,7 +19,7 @@ def handle_mcp_request(data):
     if method == "mcp/listResources":
         return list_resources()
     elif method == "mcp/callTool":
-        return call_tool(params)
+        return call_tool(params, data.get("id"))
     else:
         raise HTTPException(status_code=400, detail="Method not supported")
 
@@ -36,29 +32,27 @@ def list_resources():
     }
 
 # execute tool based on id
-def call_tool(params):
-    tool_id = params.get("tool_id")
-    if not tool_id:
+def call_tool(params, request_id):
+    tool = params.get("tool")
+    if not tool:
         return {
             "jsonrpc": "2.0",
             "error": {"code": -32602, "message": "Invalid params"},
-            "id": None
+            "id": request_id
         }
 
-    # simulate tool execution
-    if tool_id == "tool1":
-        result = "Data compressed successfully"
-    elif tool_id == "tool2":
-        result = "Job submitted successfully"
+    if tool == "parquet":
+        file = params.get("file", "weather_data.parquet")
+        column = params.get("column")
+        
+        filepath = os.path.join("data", file)
+             
+        # read the column data
+        result = read_column(filepath, column)   
+        return {"jsonrpc": "2.0", "id": request_id, "result": result}
     else:
         return {
             "jsonrpc": "2.0",
             "error": {"code": -32601, "message": "Tool not found"},
-            "id": None
+            "id": request_id
         }
-
-    return {
-        "jsonrpc": "2.0",
-        "result": result,
-        "id": None
-    } 

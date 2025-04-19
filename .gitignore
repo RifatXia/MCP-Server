@@ -2,6 +2,7 @@
 *.toml
 *.lock
 *question.txt
+data/generator.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
