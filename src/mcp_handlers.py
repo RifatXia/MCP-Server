@@ -4,8 +4,16 @@ from src.capabilities.parquet_handler import read_column
 
 # sample data for resources
 resources = [
-    {"id": "resource1", "type": "HDF5", "description": "Sample HDF5 resource"},
-    {"id": "resource2", "type": "S3", "description": "Sample S3 resource"}
+    {"id": "resource1", "type": "Parquet", "description": "Sample Parquet resource"}
+]
+
+tools = [
+    {
+        "id": "tool1",
+        "name": "Parquet Reader",
+        "description": "Reads columns from Parquet files",
+        "usage": "'tool': 'parquet', 'file': 'filename (optional)', 'column': 'column_name' in params."
+    }
 ]
 
 # handle mcp request
@@ -17,18 +25,28 @@ def handle_mcp_request(data):
     params = data.get("params", {})
 
     if method == "mcp/listResources":
-        return list_resources()
+        return list_resources(data.get("id"))
+    elif method == "mcp/listTools":
+        return list_tools(data.get("id"))
     elif method == "mcp/callTool":
         return call_tool(params, data.get("id"))
     else:
         raise HTTPException(status_code=400, detail="Method not supported")
 
 # list available resources
-def list_resources():
+def list_resources(id):
     return {
         "jsonrpc": "2.0",
         "result": resources,
-        "id": None
+        "id": id
+    }
+
+# list of available tools
+def list_tools(id):
+    return {
+        "jsonrpc": "2.0",
+        "result": tools,
+        "id": id
     }
 
 # execute tool based on id
