@@ -33,3 +33,16 @@ uvicorn src.server:app --reload
     },
     "id": 1
 }
+
+# Processing CSV using pandas:
+{
+    "jsonrpc": "2.0",
+    "method": "mcp/callTool",
+    "params": {
+        "tool": "pandas",
+        "file": "data.csv",
+        "column": "marks",
+        "threshold": 0
+    },
+    "id": 1
+}

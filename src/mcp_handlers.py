@@ -3,6 +3,7 @@ import os
 from src.capabilities.parquet_handler import read_column
 from src.capabilities.sort_handler import sort_log_by_timestamp
 from src.capabilities.compression_handler import compress_file
+from src.capabilities.pandas_handler import analyze_csv
 
 # sample data for resources
 resources = [
@@ -27,6 +28,12 @@ tools = [
         "name": "Compression Tool",
         "description": "Compresses files using gzip",
         "usage": "'tool': 'compress', 'file': 'filename' in params."
+    },
+    {
+        "id": "tool4",
+        "name": "Data Analysis using Pandas",
+        "description": "Analyzes CSV files using pandas",
+        "usage": "'tool': 'pandas', 'file': 'filename', 'column': 'column_name', 'threshold': value in params."
     }
 ]
 
@@ -97,6 +104,17 @@ def call_tool(params, request_id):
         
         # compress file using gzip
         result = compress_file(filepath)
+        return {"jsonrpc": "2.0", "id": request_id, "result": result}
+    
+    elif tool == "pandas":
+        file = params.get("file", "data.csv")
+        column = params.get("column", "marks")
+        threshold = params.get("threshold", 50)
+        
+        filepath = os.path.join("data", file)
+        
+        # analyze csv data using pandas
+        result = analyze_csv(filepath, column, threshold)
         return {"jsonrpc": "2.0", "id": request_id, "result": result}
     
     else:
