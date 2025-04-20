@@ -1,4 +1,5 @@
-# MCP-Server
+Name: Zia Uddin Chowdhury
+ID: 20615319
 
 uvicorn src.server:app --reload
 
