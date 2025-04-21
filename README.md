@@ -131,7 +131,96 @@ MCP-Server/
 
 ## JSON-RPC Requests and Responses
 
-### 1. List Available Tools
+### 1. List Resources
+
+Request:
+```json
+{
+    "jsonrpc": "2.0",
+    "method": "mcp/listResources",
+    "id": 1
+}
+```
+
+Response:
+```json
+{
+    "jsonrpc": "2.0",
+    "result": [
+        {
+            "id": "resource1",
+            "name": "Weather Data",
+            "type": "Parquet",
+            "description": "Weather measurements including temperature, humidity, and pressure",
+            "path": "data/weather_data.parquet",
+            "format": "parquet",
+            "columns": ["temperature", "humidity", "pressure", "timestamp"]
+        },
+        {
+            "id": "resource2",
+            "name": "System Logs",
+            "type": "Log",
+            "description": "System event logs with timestamps",
+            "path": "data/huge_log.txt",
+            "format": "text",
+            "schema": "timestamp:string message:string level:string"
+        },
+        {
+            "id": "resource3",
+            "name": "Student Records",
+            "type": "CSV",
+            "description": "Student academic records with marks",
+            "path": "data/data.csv",
+            "format": "csv",
+            "columns": ["id", "name", "subject", "marks"]
+        },
+        {
+            "id": "resource4",
+            "name": "Application Logs",
+            "type": "Log",
+            "description": "Application startup and runtime logs with timestamps and log levels",
+            "path": "data/output.log",
+            "format": "text",
+            "schema": "timestamp:string level:string message:string",
+            "sample": "[2024-03-16 00:00:15] INFO: Application startup"
+        }
+    ],
+    "id": 1
+}
+```
+
+### 2. Get Resource
+
+Request:
+```json
+{
+    "jsonrpc": "2.0",
+    "method": "mcp/getResource",
+    "params": {
+        "id": "resource1"
+    },
+    "id": 1
+}
+```
+
+Response:
+```json
+{
+    "jsonrpc": "2.0",
+    "result": {
+        "id": "resource1",
+        "name": "Weather Data",
+        "type": "Parquet",
+        "description": "Weather measurements including temperature, humidity, and pressure",
+        "path": "data/weather_data.parquet",
+        "format": "parquet",
+        "columns": ["temperature", "humidity", "pressure", "timestamp"]
+    },
+    "id": 1
+}
+```
+
+### 3. List Available Tools
 
 Request:
 ```json
@@ -176,7 +265,7 @@ Response:
 }
 ```
 
-### 2. Read Parquet Data
+### 4. Read Parquet Data
 
 Request:
 ```json
@@ -207,7 +296,7 @@ Response:
 }
 ```
 
-### 3. Sort Log Data
+### 5. Sort Log Data
 
 #### Example 1: Small Log File
 
@@ -273,7 +362,7 @@ Response:
 }
 ```
 
-### 4. Compress File
+### 6. Compress File
 
 Request:
 ```json
@@ -304,7 +393,7 @@ Response:
 }
 ```
 
-### 5. Process CSV Data
+### 7. Process CSV Data
 
 Request:
 ```json
