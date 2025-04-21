@@ -209,6 +209,8 @@ Response:
 
 ### 3. Sort Log Data
 
+#### Example 1: Small Log File
+
 Request:
 ```json
 {
@@ -232,6 +234,41 @@ Response:
         "2024-03-15 09:30:55 WARNING Network latency increased",
         "2024-03-15 10:30:45 INFO Server started successfully",
         "2024-03-15 11:00:45 INFO Scheduled maintenance started"
+    ]
+}
+```
+
+#### Example 2: Large Log File
+
+Request:
+```json
+{
+    "jsonrpc": "2.0",
+    "method": "mcp/callTool",
+    "params": {
+        "tool": "sort",
+        "file": "huge_log.txt"
+    },
+    "id": 1
+}
+```
+
+Response:
+```json
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": [
+        "2024-03-15 09:00:00 INFO System initialization complete",
+        "2024-03-15 09:15:22 WARNING High CPU usage detected",
+        "2024-03-15 09:30:55 WARNING Network latency increased",
+        "2024-03-15 09:45:18 INFO User authentication successful",
+        "2024-03-15 10:00:15 INFO Backup process started",
+        "2024-03-15 10:15:33 ERROR File system error detected",
+        "2024-03-15 10:30:45 INFO Server started successfully",
+        "2024-03-15 11:00:45 INFO Scheduled maintenance started",
+        "2024-03-15 11:30:00 WARNING Memory usage above 80%",
+        "2024-03-15 11:45:30 ERROR Database connection failed"
     ]
 }
 ```
