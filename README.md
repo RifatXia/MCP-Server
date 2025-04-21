@@ -2,7 +2,7 @@
 
 ## Student Information
 - Name: Zia Uddin Chowdhury
-- Student ID: 20615319
+- Student ID: A20615319
 
 ## Implemented MCP Capabilities
 
@@ -51,6 +51,7 @@ dependencies = [
     "pyarrow>=19.0.1",
     "pydantic>=2.11.3",
     "pytest>=8.3.5",
+    "pytest-asyncio==0.26.0",
     "requests>=2.32.3",
     "uvicorn>=0.34.1",
 ]
@@ -128,35 +129,147 @@ MCP-Server/
 └── pytest.ini
 ```
 
-## Example JSON-RPC Requests
+## JSON-RPC Requests and Responses
 
-1. Read Parquet Data:
+### 1. List Available Tools
+
+Request:
 ```json
 {
-  "jsonrpc": "2.0",
-  "method": "mcp/callTool",
-  "id": 2,
-  "params": {
-    "tool": "parquet",
-    "column": "temperature"
-  }
+    "jsonrpc": "2.0",
+    "method": "mcp/listTools",
+    "id": 1
 }
 ```
 
-2. Sort Log Data:
+Response:
+```json
+{
+    "jsonrpc": "2.0",
+    "result": [
+        {
+            "id": "tool1",
+            "name": "Parquet Reader",
+            "description": "Reads columns from Parquet files",
+            "usage": "'tool': 'parquet', 'file': 'filename (optional)', 'column': 'column_name' in params."
+        },
+        {
+            "id": "tool2",
+            "name": "Parallel Sorting",
+            "description": "Sorts log file entries by timestamp",
+            "usage": "'tool': 'sort', 'file': 'log_filename' in params."
+        },
+        {
+            "id": "tool3",
+            "name": "Compression Tool",
+            "description": "Compresses files using gzip",
+            "usage": "'tool': 'compress', 'file': 'filename' in params."
+        },
+        {
+            "id": "tool4",
+            "name": "Data Analysis using Pandas",
+            "description": "Analyzes CSV files using pandas",
+            "usage": "'tool': 'pandas', 'file': 'filename', 'column': 'column_name', 'threshold': value in params."
+        }
+    ],
+    "id": 1
+}
+```
+
+### 2. Read Parquet Data
+
+Request:
+```json
+{
+    "jsonrpc": "2.0",
+    "method": "mcp/callTool",
+    "params": {
+        "tool": "parquet",
+        "column": "temperature"
+    },
+    "id": 2
+}
+```
+
+Response:
+```json
+{
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": [
+        14.96,
+        2.01,
+        0.56,
+        16.19,
+        30.18,
+        "..."
+    ]
+}
+```
+
+### 3. Sort Log Data
+
+Request:
 ```json
 {
     "jsonrpc": "2.0",
     "method": "mcp/callTool",
     "params": {
         "tool": "sort",
-        "file": "huge_log.txt"
+        "file": "small_log.txt"
     },
     "id": 1
 }
 ```
 
-3. Process CSV Data:
+Response:
+```json
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": [
+        "2024-03-15 09:15:22 WARNING High CPU usage detected",
+        "2024-03-15 09:30:55 WARNING Network latency increased",
+        "2024-03-15 10:30:45 INFO Server started successfully",
+        "2024-03-15 11:00:45 INFO Scheduled maintenance started"
+    ]
+}
+```
+
+### 4. Compress File
+
+Request:
+```json
+{
+    "jsonrpc": "2.0",
+    "method": "mcp/callTool",
+    "params": {
+        "tool": "compress",
+        "file": "output.log"
+    },
+    "id": 1
+}
+```
+
+Response:
+```json
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+        "status": "success",
+        "original_file": "data/output.log",
+        "compressed_file": "data/output.log.gz",
+        "original_size": 603,
+        "compressed_size": 337,
+        "compression_ratio": "44.11%"
+    }
+}
+```
+
+### 5. Process CSV Data
+
+Request:
 ```json
 {
     "jsonrpc": "2.0",
@@ -165,8 +278,36 @@ MCP-Server/
         "tool": "pandas",
         "file": "data.csv",
         "column": "marks",
-        "threshold": 0
+        "threshold": 95
     },
     "id": 1
+}
+```
+
+Response:
+```json
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+        "status": "success",
+        "total_rows": 75,
+        "filtered_rows": 4,
+        "data": [
+            {
+                "id": 29,
+                "name": "Jordan Thomas",
+                "subject": "Science",
+                "marks": 100
+            },
+            {
+                "id": 32,
+                "name": "Jamie Thomas",
+                "subject": "Science",
+                "marks": 97
+            },
+            "..."
+        ]
+    }
 }
 ```
