@@ -5,9 +5,45 @@ from src.capabilities.sort_handler import sort_log_by_timestamp
 from src.capabilities.compression_handler import compress_file
 from src.capabilities.pandas_handler import analyze_csv
 
-# sample data for resources
+# available resources
 resources = [
-    {"id": "resource1", "type": "Parquet", "description": "Sample Parquet resource"}
+    {
+        "id": "resource1",
+        "name": "Weather Data",
+        "type": "Parquet",
+        "description": "Weather measurements including temperature, humidity, and pressure",
+        "path": "data/weather_data.parquet",
+        "format": "parquet",
+        "columns": ["temperature", "humidity", "pressure", "timestamp"]
+    },
+    {
+        "id": "resource2",
+        "name": "System Logs",
+        "type": "Log",
+        "description": "System event logs with timestamps",
+        "path": "data/huge_log.txt",
+        "format": "text",
+        "schema": "timestamp:string message:string level:string"
+    },
+    {
+        "id": "resource3",
+        "name": "Student Records",
+        "type": "CSV",
+        "description": "Student academic records with marks",
+        "path": "data/data.csv",
+        "format": "csv",
+        "columns": ["id", "name", "subject", "marks"]
+    },
+    {
+        "id": "resource4",
+        "name": "Application Logs",
+        "type": "Log",
+        "description": "Application startup and runtime logs with timestamps and log levels",
+        "path": "data/output.log",
+        "format": "text",
+        "schema": "timestamp:string level:string message:string",
+        "sample": "[2024-03-16 00:00:15] INFO: Application startup"
+    }
 ]
 
 tools = [
@@ -51,15 +87,41 @@ async def handle_mcp_request(data):
         return list_tools(data.get("id"))
     elif method == "mcp/callTool":
         return await call_tool(params, data.get("id"))
+    elif method == "mcp/getResource":
+        return get_resource(params, data.get("id"))
     else:
         raise HTTPException(status_code=400, detail="Method not supported")
 
-# list available resources
+# list available resources with detailed information
 def list_resources(id):
     return {
         "jsonrpc": "2.0",
         "result": resources,
         "id": id
+    }
+
+# get specific resource by id
+def get_resource(params, request_id):
+    resource_id = params.get("id")
+    if not resource_id:
+        return {
+            "jsonrpc": "2.0",
+            "error": {"code": -32602, "message": "Resource ID not provided"},
+            "id": request_id
+        }
+
+    resource = next((r for r in resources if r["id"] == resource_id), None)
+    if not resource:
+        return {
+            "jsonrpc": "2.0",
+            "error": {"code": -32601, "message": f"Resource {resource_id} not found"},
+            "id": request_id
+        }
+
+    return {
+        "jsonrpc": "2.0",
+        "result": resource,
+        "id": request_id
     }
 
 # list of available tools
