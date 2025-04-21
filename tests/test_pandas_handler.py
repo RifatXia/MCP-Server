@@ -16,22 +16,25 @@ def sample_csv_file():
     os.unlink(f.name)
 
 # test successful analysis of csv data
-def test_analyze_success(sample_csv_file):
-    result = analyze_csv(sample_csv_file, 'score', 80)
+@pytest.mark.asyncio
+async def test_analyze_success(sample_csv_file):
+    result = await analyze_csv(sample_csv_file, 'score', 80)
     assert isinstance(result, dict)
     assert result["status"] == "success"
     assert len(result["data"]) == 2
 
 # test analysis with non-existent file
-def test_analyze_nonexistent_file():
-    result = analyze_csv("nonexistent.csv", "score", 80)
+@pytest.mark.asyncio
+async def test_analyze_nonexistent_file():
+    result = await analyze_csv("nonexistent.csv", "score", 80)
     assert isinstance(result, dict)
     assert result["status"] == "error"
     assert "no such file or directory" in result["message"].lower()
 
 # test analysis with non-existent column
-def test_analyze_nonexistent_column(sample_csv_file):
-    result = analyze_csv(sample_csv_file, "invalid_column", 80)
+@pytest.mark.asyncio
+async def test_analyze_nonexistent_column(sample_csv_file):
+    result = await analyze_csv(sample_csv_file, "invalid_column", 80)
     assert isinstance(result, dict)
     assert result["status"] == "error"
     assert "invalid_column" in result["message"].lower() 

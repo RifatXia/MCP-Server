@@ -38,7 +38,7 @@ tools = [
 ]
 
 # handle mcp request
-def handle_mcp_request(data):
+async def handle_mcp_request(data):
     if "jsonrpc" not in data or "method" not in data:
         raise HTTPException(status_code=400, detail="Invalid JSON-RPC request")
 
@@ -50,7 +50,7 @@ def handle_mcp_request(data):
     elif method == "mcp/listTools":
         return list_tools(data.get("id"))
     elif method == "mcp/callTool":
-        return call_tool(params, data.get("id"))
+        return await call_tool(params, data.get("id"))
     else:
         raise HTTPException(status_code=400, detail="Method not supported")
 
@@ -71,7 +71,7 @@ def list_tools(id):
     }
 
 # execute tool based on id
-def call_tool(params, request_id):
+async def call_tool(params, request_id):
     tool = params.get("tool")
     if not tool:
         return {
@@ -113,8 +113,8 @@ def call_tool(params, request_id):
         
         filepath = os.path.join("data", file)
         
-        # analyze csv data using pandas
-        result = analyze_csv(filepath, column, threshold)
+        # analyze csv data using pandas (async)
+        result = await analyze_csv(filepath, column, threshold)
         return {"jsonrpc": "2.0", "id": request_id, "result": result}
     
     else:
