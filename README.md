@@ -24,17 +24,19 @@
 
 ## Environment Setup (Linux)
 
-1. Create a virtual environment:
+1. Install uv:
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+pip install uv
 ```
 
-2. Install and use uv for dependency management:
+2. Create and activate environment using uv:
 ```bash
-# Install uv
-pip install uv
+uv venv mcp-server
+source mcp-server/bin/activate
+```
 
+3. Install dependencies using uv:
+```bash
 # Install dependencies from pyproject.toml
 uv pip install --requirement pyproject.toml
 ```
@@ -75,6 +77,7 @@ Run all tests:
 ```bash
 python3 -m pytest
 ```
+![Successful Tests](images/tests.png)
 
 Run specific test files:
 ```bash
@@ -124,6 +127,7 @@ MCP-Server/
 │   ├── test_parquet_handler.py
 │   └── test_sort_handler.py
 ├── data/
+├── images/
 ├── README.md
 ├── pyproject.toml
 └── pytest.ini
