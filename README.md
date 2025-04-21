@@ -84,9 +84,6 @@ uvicorn src.server:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The server will start on `http://localhost:8000` by default.
-You can access:
-- API Documentation: `http://localhost:8000/docs`
-- Alternative Documentation: `http://localhost:8000/redoc`
 
 ## Running Tests
 
