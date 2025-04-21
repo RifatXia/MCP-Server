@@ -1,6 +1,4 @@
 # Defined files
-*.toml
-*.lock
 *question.txt
 data/generator*.py
 
