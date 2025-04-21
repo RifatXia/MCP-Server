@@ -133,6 +133,8 @@ MCP-Server/
 
 ### 1. List Resources
 
+![List Resources Request/Response](images/listResources.png)
+
 Request:
 ```json
 {
@@ -191,6 +193,8 @@ Response:
 
 ### 2. Get Resource
 
+![Get Resource Request/Response](images/getResource.png)
+
 Request:
 ```json
 {
@@ -221,6 +225,8 @@ Response:
 ```
 
 ### 3. List Available Tools
+
+![List Tools Request/Response](images/listTools.png)
 
 Request:
 ```json
@@ -267,6 +273,8 @@ Response:
 
 ### 4. Read Parquet Data
 
+![Read Parquet Data Request/Response](images/parquet.png)
+
 Request:
 ```json
 {
@@ -299,7 +307,6 @@ Response:
 ### 5. Sort Log Data
 
 #### Example 1: Small Log File
-
 Request:
 ```json
 {
@@ -328,6 +335,8 @@ Response:
 ```
 
 #### Example 2: Large Log File
+
+![Sort Large Log Request/Response](images/compress.png)
 
 Request:
 ```json
@@ -364,6 +373,8 @@ Response:
 
 ### 6. Compress File
 
+![Compress File Request/Response](images/compress.png)
+
 Request:
 ```json
 {
@@ -394,6 +405,8 @@ Response:
 ```
 
 ### 7. Process CSV Data
+
+![Process CSV Data Request/Response](images/pandas.png)
 
 Request:
 ```json
