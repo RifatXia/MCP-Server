@@ -4,23 +4,37 @@
 - Name: Zia Uddin Chowdhury
 - Student ID: A20615319
 
-## Implemented MCP Capabilities
+## MCP Capabilities
 
-1. **Parquet Handler**
-   - Reads columns from Parquet files
-   - Supports error handling for non-existent files and columns
+**Parquet Handler**
+- Reads specific columns from .parquet files using PyArrow (pyarrow must be installed)
+- Expects valid file paths and column names
+- Supports error handling for:
+  - Non-existent files
+  - Missing or incorrect column names
 
-2. **Sort Handler**
-   - Sorts log file entries by timestamp
-   - Handles empty files and invalid formats
+**Sort Handler**
+- Sorts log file lines by timestamps in the format: YYYY-MM-DD HH:MM:SS
+- Handles edge cases such as:
+  - Empty files
+  - Invalid timestamp formats
+- Returns either sorted entries or a descriptive error message
 
-3. **Compression Handler**
-   - Compresses files using gzip
-   - Provides compression statistics (original size, compressed size, ratio)
+**Compression Handler**
+- Compresses files into .gz format using gzip
+- Outputs compressed files to the same directory as the original
+- Preserves the original files
+- Provides compression statistics:
+  - Original size
+  - Compressed size
+  - Compression ratio
+- Skips compression for empty files and raises a warning/error
 
-4. **Pandas Handler**
-   - Analyzes CSV files
-   - Filters data based on column values and thresholds
+**Pandas Handler**
+- Analyzes .csv files using pandas (headers required)
+- Filters rows based on numeric column thresholds
+- Returns results in a structured dict format
+- Handles missing values and malformed files gracefully
 
 ## Environment Setup (Linux)
 
@@ -64,12 +78,15 @@ python = ">=3.10"
 ## Running the MCP Server
 
 1. Ensure you're in the virtual environment
-2. Start the server:
+2. Start the FastAPI server using uvicorn:
 ```bash
-python3 src/server.py
+uvicorn src.server:app --reload --host 0.0.0.0 --port 8000
 ```
 
-The server will start on `localhost:8000` by default.
+The server will start on `http://localhost:8000` by default.
+You can access:
+- API Documentation: `http://localhost:8000/docs`
+- Alternative Documentation: `http://localhost:8000/redoc`
 
 ## Running Tests
 
@@ -86,26 +103,6 @@ python3 -m pytest tests/test_parquet_handler.py
 python3 -m pytest tests/test_compression_handler.py
 python3 -m pytest tests/test_pandas_handler.py
 ```
-
-## Implementation Notes
-
-1. **Sort Handler**
-   - Expects log files with timestamp format: "YYYY-MM-DD HH:MM:SS"
-   - Returns sorted lines or error message for invalid formats
-
-2. **Compression Handler**
-   - Creates .gz files in the same directory as the input file
-   - Empty files will result in an error due to compression ratio calculation
-   - Original files are preserved
-
-3. **Parquet Handler**
-   - Requires pyarrow installation
-   - Supports reading single columns from parquet files
-
-4. **Pandas Handler**
-   - Expects CSV files with headers
-   - Supports filtering based on numeric thresholds
-   - Returns filtered data in dictionary format
 
 ## Project Structure
 ```
