@@ -33,7 +33,7 @@
 **Pandas Handler**
 - Analyzes .csv files using pandas (headers required)
 - Filters rows based on numeric column thresholds
-- Returns results in a structured dict format
+- Returns results in a structured format
 - Handles missing values and malformed files gracefully
 
 ## Environment Setup (Linux)
